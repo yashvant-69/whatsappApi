@@ -5,8 +5,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sendMessage = isset($_POST['sendMessage']) ? $_POST['sendMessage'] : '';
     $createUser = isset($_POST['userCreate']) ? $_POST['userCreate'] : '';
     if ($sendMessage == 'whatsappApi') {
-        echo 11;
-        die;
         $phoneNumber = isset($_POST['phoneNumber']) ? $_POST['phoneNumber'] : "";
         $countryCode = isset($_POST['countryCode']) ? $_POST['countryCode'] : "";
         $callbackData = isset($_POST['callbackData']) ? $_POST['callbackData'] : "";
