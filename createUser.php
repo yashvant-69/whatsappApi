@@ -36,11 +36,11 @@
             </div>
             <div class="form-group">
                 <label for="exampleInputPhone">Phone</label>
-                <input type="tel" class="form-control" name="phone" id="exampleInputPhone" placeholder="Enter Password" required>
+                <input type="tel" class="form-control" name="phone" id="exampleInputPhone" placeholder="Ex. 9876543218" required>
             </div>
             <div class="form-group">
                 <label for="exampleInputCountryCode">Country Code</label>
-                <input type="text" class="form-control" name="countryCode" id="exampleInputCountryCode" placeholder="Enter Country Code" required>
+                <input type="text" class="form-control" name="countryCode" id="exampleInputCountryCode" placeholder="example +91" value="+91" required>
             </div>
             <div id="traitsContainer">
             </div>
@@ -71,6 +71,11 @@
             traitsContainer.insertAdjacentHTML('beforeend', traitHtml);
         }
     </script>
+      <script>
+    setTimeout(() => {
+        document.querySelector('.alert-success').remove();
+    }, 10000);
+</script>
 
 </body>
 

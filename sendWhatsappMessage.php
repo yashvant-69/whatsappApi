@@ -33,39 +33,84 @@
         ?>
 
         <form method="post" action="controller.php">
-            <div class="mb-3">
+            <?php
+            $curl = curl_init();
+            $api_url = "https://api.interakt.ai/v1/public/apis/users/";
+
+            $data = array(
+                "filters" => array(
+                    array(
+                        "trait" => "created_at_utc",
+                        "op" => "gt",
+                        "val" => "2024-05-01"
+                    )
+                )
+            );
+            $json_output = json_encode($data);
+
+            curl_setopt($curl, CURLOPT_URL, $api_url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $json_output);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                'Authorization: Basic aUdSZmZEZGljeHNEX1ZmYzlZUWRaZFl5RFhDUWo2eUdTc3pQMmpzNGY2czo=',
+                'Content-Type: application/json'
+            ));
+
+            $userList = curl_exec($curl);
+            if ($userList === false) {
+                echo 'Curl error: ' . curl_error($curl);
+            } else {
+                $data = json_decode($userList, true);
+            }
+            curl_close($curl);
+
+            if ($data && isset($data['data']['customers']) && !empty($data['data']['customers'])) {
+                $userCheckboxes = '';
+                foreach ($data['data']['customers'] as $user) { ?>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="<?php echo $user['phone_number'] ?>" id="flexCheckDefault" name="user[]">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            <?php echo $user['traits']['name'] ?>
+                        </label>
+                    </div>
+            <?php   }
+            } 
+            ?>
+            <!-- <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Phone Number</label>
-                <input type="text" class="form-control" value="6263668091" name="phoneNumber" id="exampleFormControlInput1" placeholder="ex. 6263668091">
-            </div>
+                <input type="text" class="form-control" required name="phoneNumber" id="exampleFormControlInput1" placeholder="ex. 6263668091">
+            </div> -->
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">CountryCode</label>
-                <input type="text" class="form-control" value="+91" name="countryCode" id="exampleFormControlInput1" placeholder="ex. +91">
+                <input type="text" class="form-control" required value="+91" name="countryCode" id="exampleFormControlInput1" placeholder="ex. +91">
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">CallbackData</label>
-                <input type="text" class="form-control" value="View full Profile" name="callbackData" id="exampleFormControlInput1" placeholder="ex. View full Profile">
+                <input type="text" class="form-control" required name="callbackData" id="exampleFormControlInput1" placeholder="ex. View full Profile">
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Type</label>
-                <input type="text" class="form-control" value="Template" name="type" id="exampleFormControlInput1" placeholder="ex. Template">
+                <input type="text" class="form-control" value="Template" required name="type" id="exampleFormControlInput1" placeholder="ex. Template">
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Template Name</label>
-                <input type="text" class="form-control" value="view_profile" name="templateName" id="exampleFormControlInput1" placeholder="ex. Template">
+                <input type="text" class="form-control" required name="templateName" id="exampleFormControlInput1" placeholder="ex. Template Name">
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">LanguageCode</label>
-                <input type="text" class="form-control" value="en" name="languageCode" id="exampleFormControlInput1" placeholder="ex. en">
+                <input type="text" class="form-control" required value="en" name="languageCode" id="exampleFormControlInput1" placeholder="ex. en">
             </div>
 
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">header Values</label>
-                <input type="text" class="form-control" value="Chanchal" name="headerValues" id="exampleFormControlInput1" placeholder="ex. Template">
+                <input type="text" class="form-control" required name="headerValues" id="exampleFormControlInput1" placeholder="ex. Hi Yash">
             </div>
 
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">bodyValues</label>
-                <input type="text" class="form-control" value="someone has viewed your profile" name="bodyValues" id="exampleFormControlInput1" placeholder="ex. Template">
+                <input type="text" class="form-control" required name="bodyValues" id="exampleFormControlInput1" placeholder="ex. Nice to meet you">
             </div>
             <div class="mb-3">
 
@@ -75,10 +120,10 @@
         </form>
     </div>
     <script>
-    setTimeout(() => {
-        document.querySelector('.alert-success').remove();
-    }, 10000);
-</script>
+        setTimeout(() => {
+            document.querySelector('.alert-success').remove();
+        }, 10000);
+    </script>
 
 
 </body>
