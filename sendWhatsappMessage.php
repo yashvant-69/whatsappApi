@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <title>Document</title>
     <style>
@@ -25,18 +25,12 @@
         </div>
         <?php
         session_start();
-        if(isset($_SESSION['success_message'])) {
-            echo "<div class='alert alert-success'>".$_SESSION['success_message']."</div>";
+        if (isset($_SESSION['success_message'])) {
+            echo "<div class='alert alert-success'>" . $_SESSION['success_message'] . "</div>";
             // Success message ko ek baar display karne ke baad, usko unset kare
             unset($_SESSION['success_message']);
         }
-
-        $result = isset($_GET['result']) ? $_GET['result'] : null;
-        $message = isset($_GET['message']) ? $_GET['message'] : null;
-
-        if ($result) { ?>
-            <div id="successAlert" class="alert alert-success"> <?php echo $message ?></div>
-        <?php } ?>
+        ?>
 
         <form method="post" action="controller.php">
             <div class="mb-3">
@@ -80,6 +74,11 @@
 
         </form>
     </div>
+    <script>
+    setTimeout(() => {
+        document.querySelector('.alert-success').remove();
+    }, 10000);
+</script>
 
 
 </body>

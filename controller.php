@@ -1,5 +1,6 @@
 <?php
 session_start();
+$mainUrl = 'http://' . $_SERVER['HTTP_HOST'].'/whatsappApi/';
 $phoneNumberErr = $countryCodeErr = $callbackDataErr = $typeErr = $templateNameErr = $languageCodeErr = $headerValuesErr = $bodyValuesErr = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sendMessage = isset($_POST['sendMessage']) ? $_POST['sendMessage'] : '';
@@ -68,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $message = $data['message'];
                     $id = $data['id'];
                     $_SESSION['success_message'] = $message;
-                    header("Location: http://localhost/yashwant_github/whatsapp_api/sendWhatsappMessage.php");
+                    header("Location: " . $mainUrl . "sendWhatsappMessage.php");
                     exit();
                 }
 
@@ -128,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $message = $data['message'];
             // $id = $data['id'];
             $_SESSION['success_message'] = $message;
-            header("Location: http://localhost/yashwant_github/whatsapp_api/createUser.php");
+            header("Location: " . $mainUrl . "createUser.php");
             exit();
         }
 
