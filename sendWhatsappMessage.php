@@ -33,6 +33,7 @@
         ?>
 
         <form method="post" action="controller.php">
+        <label for="form-check-label">Select User</label>
             <?php
             $curl = curl_init();
             $api_url = "https://api.interakt.ai/v1/public/apis/users/";
@@ -67,7 +68,7 @@
             curl_close($curl);
 
             if ($data && isset($data['data']['customers']) && !empty($data['data']['customers'])) {
-                $userCheckboxes = '';
+              
                 foreach ($data['data']['customers'] as $user) { ?>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="<?php echo $user['phone_number'] ?>" id="flexCheckDefault" name="user[]">
