@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <title>Document</title>
+    <!-- <title>Document</title> -->
     <style>
         .userForm {
             border: 2px solid grey;
@@ -35,7 +35,7 @@
         ?>
 
         <form method="post" action="controller.php">
-        <label for="form-check-label">Select User</label>
+            <label for="form-check-label">Select User</label>
             <?php
             $curl = curl_init();
             $api_url = "https://api.interakt.ai/v1/public/apis/users/";
@@ -70,21 +70,18 @@
             curl_close($curl);
 
             if ($data && isset($data['data']['customers']) && !empty($data['data']['customers'])) {
-              
+
                 foreach ($data['data']['customers'] as $user) { ?>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="<?php echo $user['phone_number'] ?>" id="flexCheckDefault" name="user[]">
+                        <input class="form-check-input" type="checkbox" value="<?php echo $user['phone_number'] ?>" id="user" name="user[]">
                         <label class="form-check-label" for="flexCheckDefault">
                             <?php echo $user['traits']['name'] ?>
                         </label>
                     </div>
             <?php   }
-            } 
+            }
             ?>
-            <!-- <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Phone Number</label>
-                <input type="text" class="form-control" required name="phoneNumber" id="exampleFormControlInput1" placeholder="ex. 6263668091">
-            </div> -->
+
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">CountryCode</label>
                 <input type="text" class="form-control" required value="+91" name="countryCode" id="exampleFormControlInput1" placeholder="ex. +91">
@@ -117,7 +114,7 @@
             </div>
             <div class="mb-3">
 
-                <button type="submit" value="whatsappApi" name="sendMessage" class="btn btn-primary">Submit</button>
+                <button value="whatsappApi" id="submit" name="sendMessage" class="btn btn-primary">Submit</button>
             </div>
 
         </form>
@@ -126,6 +123,16 @@
         setTimeout(() => {
             document.querySelector('.alert-success').remove();
         }, 10000);
+
+        $(document).on('click', '#submit', function() {
+            let checked = $('input[type="checkbox"]:checked').length;
+            if (checked < 1) {
+                alert('Please select at least one user.');
+                return false;
+            } else {
+                $('#submit').submit();
+            }
+        });
     </script>
 
 
