@@ -19,6 +19,8 @@
     <div class="container mt-5 userForm">
         <div class="d-flex text-align-center mt-5">
             <h4>Create User</h4>
+            <a href="sendWhatsappMessage.php" class="btn btn-primary" style="margin-left:auto;">Send Notification
+            </a>
         </div>
 
         <?php

@@ -22,6 +22,8 @@
     <div class="container mt-5 userForm">
         <div class="d-flex text-align-center mt-5">
             <h4>Send Whatsapp Notification</h4>
+            <a href="createUser.php" class="btn btn-primary" style="margin-left:auto;">Add User
+            </a>
         </div>
         <?php
         session_start();
