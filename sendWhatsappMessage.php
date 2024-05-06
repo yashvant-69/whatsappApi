@@ -32,6 +32,12 @@
             // Success message ko ek baar display karne ke baad, usko unset kare
             unset($_SESSION['success_message']);
         }
+
+        if (isset($_SESSION['error_message'])) {
+            echo "<div class='alert alert-danger'>" . $_SESSION['error_message'] . "</div>";
+            // Success message ko ek baar display karne ke baad, usko unset kare
+            unset($_SESSION['error_message']);
+        }
         ?>
 
         <form method="post" action="controller.php">
@@ -82,6 +88,33 @@
             }
             ?>
 
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <label for="exampleInputPhone">Phone</label>
+                        <input type="tel" class="form-control" name="phone[]" id="phone" placeholder="Ex. 9876543218">
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-primary my-2" style="float: right;" onclick="addNumber()">Add Number</button>
+                    </div>
+                </div>
+                <div class="row">
+                <div class="form-group col-6">
+                    <label for="traitKey">Trait Key</label>
+                    <input type="text" class="form-control" name="traitKey[]" placeholder="Enter Trait Key">
+                </div>
+                <div class="form-group col-6">
+                    <label for="traitValue">Trait Value</label>
+                    <input type="text" class="form-control" name="traitValue[]" placeholder="Enter Trait Value">
+                </div>
+            </div>
+            </div>
+            <div id="NumberContainer">
+            </div>
+            <div id="traitsContainer">
+            </div>
+            <!-- <button type="button" class="btn btn-primary my-2" style="float: right;" onclick="addTrait()">Add Trait</button> -->
+
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">CountryCode</label>
                 <input type="text" class="form-control" required value="+91" name="countryCode" id="exampleFormControlInput1" placeholder="ex. +91">
@@ -120,9 +153,63 @@
         </form>
     </div>
     <script>
+        function addTrait() {
+            var traitsContainer = document.getElementById('traitsContainer');
+            var traitHtml = `
+            <div class="row">
+                <div class="form-group col-6">
+                    <label for="traitKey">Trait Key</label>
+                    <input type="text" class="form-control" name="traitKey[]" placeholder="Enter Trait Key">
+                </div>
+                <div class="form-group col-6">
+                    <label for="traitValue">Trait Value</label>
+                    <input type="text" class="form-control" name="traitValue[]" placeholder="Enter Trait Value">
+                </div>
+            </div>
+        `;
+            traitsContainer.insertAdjacentHTML('beforeend', traitHtml);
+        }
+
+        function addNumber() {
+        let row_number = Math.floor(Math.random() * 98765);
+        var NumberContainer = document.getElementById('NumberContainer');
+        var NumberHtml = `<div class="row_${row_number}">
+                  <div class="row">
+                <div class="col-sm-10">
+                    <label for="exampleInputPhone_${row_number}">Phone</label>
+                    <input type="tel"  class="form-control" name="phone[]" id="phone" placeholder="Ex. 9876543218">
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-danger my-2" style="float: right;" onclick="removeNumber(${row_number})">Remove</button>
+                </div>
+                </div>
+                <div class="row">
+                <div class="form-group col-6">
+                    <label for="traitKey">Trait Key</label>a
+                    <input type="text" class="form-control" name="tritKey[]" placeholder="Enter Trait Key">
+                </div>
+                <div class="form-group col-6">
+                    <label for="traitValue">Trait Value</label>
+                    <input type="text" class="form-control" name="traitValue[]" placeholder="Enter Trait Value">
+                </div>
+            </div>
+            </div>
+      `;
+        NumberContainer.insertAdjacentHTML('beforeend', NumberHtml);
+    }
+
+    function removeNumber(row_number) {
+        var row = document.querySelector(`.row_${row_number}`);
+        row.remove();
+    }
+
         setTimeout(() => {
             document.querySelector('.alert-success').remove();
-        }, 10000);
+        }, 10000); 
+        
+        setTimeout(() => {
+            document.querySelector('.alert-danger').remove();
+        }, 20000);
 
         $(document).on('click', '#submit', function() {
             let checked = $('input[type="checkbox"]:checked').length;

@@ -1,6 +1,11 @@
 <?php
 session_start();
-$mainUrl = 'http://' . $_SERVER['HTTP_HOST'].'/whatsappApi/';
+$errorMessage = '';
+$headers = array(
+    'Authorization: Basic aUdSZmZEZGljeHNEX1ZmYzlZUWRaZFl5RFhDUWo2eUdTc3pQMmpzNGY2czo=',
+    'Content-Type: application/json'
+);
+$mainUrl = 'http://' . $_SERVER['HTTP_HOST'] . '/whatsappApi/';
 $phoneNumberErr = $countryCodeErr = $callbackDataErr = $typeErr = $templateNameErr = $languageCodeErr = $headerValuesErr = $bodyValuesErr = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sendMessage = isset($_POST['sendMessage']) ? $_POST['sendMessage'] : '';
@@ -13,22 +18,117 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $languageCode = isset($_POST['languageCode']) ? $_POST['languageCode'] : "";
         $headerValues = isset($_POST['headerValues']) ? $_POST['headerValues'] : "";
         $bodyValues = isset($_POST['bodyValues']) ? $_POST['bodyValues'] : "";
-       // print_r(($_POST['user']));die;
+        $phones = isset($_POST['phone']) ? $_POST['phone'] : "";
+        // print_r(($_POST['user']));die;
 
         if (empty($countryCode)) {
             $countryCodeErr = "Country code is required";
         }
 
+
+
+        // get all user
+        $curl = curl_init();
+        $api_url = "https://api.interakt.ai/v1/public/apis/users/";
+
+        $data = array(
+            "filters" => array(
+                array(
+                    "trait" => "created_at_utc",
+                    "op" => "gt",
+                    "val" => "2024-05-01"
+                )
+            )
+        );
+        $json_output = json_encode($data);
+
+        curl_setopt($curl, CURLOPT_URL, $api_url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $json_output);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        $userList = curl_exec($curl);
+        if ($userList === false) {
+            echo 'Curl error: ' . curl_error($curl);
+        } else {
+            $data = json_decode($userList, true);
+        }
+        $userNumber = [];
+        if ($data && isset($data['data']['customers']) && !empty($data['data']['customers'])) {
+
+            foreach ($data['data']['customers'] as $user) {
+                $userNumber[] = $user['phone_number'];
+            }
+        }
+
+        //print_r($userNumber);die;
+
+        // if not exist user so created user 
+        if($phones){
+            foreach($phones as $phone){
+                if (empty($phone)) {
+                    continue; 
+                }
+                if (!in_array($phone, $userNumber)) {
+                    $api_url = "https://api.interakt.ai/v1/public/track/users/";
+        
+                    $json_data = array(
+                        // 'userId' => isset($_POST['userId']) ? $_POST['userId'] : '',
+                        'phoneNumber' => $phone,
+                        'countryCode' => $_POST['countryCode'],
+                    );
+        
+                    // if (isset($_POST['traitKey']) && isset($_POST['traitValue'])) {
+                    //     $json_data['traits'] = [];
+                    //     foreach ($_POST['traitKey'] as $index => $key) {
+                    //         $json_data['traits'][$key] = $_POST['traitValue'][$index];
+                    //     }
+                    // }
+        
+                    $json_data = json_encode($json_data, true);
+        
+        
+                    $curl = curl_init();
+        
+                    curl_setopt($curl, CURLOPT_URL, $api_url);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($curl, CURLOPT_POST, true);
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $json_data);
+                    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+                    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        
+                    $createUser = curl_exec($curl);
+        
+                    if (curl_errno($curl)) {
+                        echo 'Curl error: ' . curl_error($curl);
+                    } else {
+        
+                        $res = json_decode($createUser, true);
+        
+                        if($res['result'] != 1){
+                            $errorMessage =  $data['message'];
+                        }
+                    }
+        
+                    curl_close($curl);
+                }
+
+                $multipleUser = $_POST['user'];
+                if (!empty($phone) && !in_array($phone, $multipleUser)) {
+                    array_push($multipleUser, $phone);
+                }
+            }
+        }
+       
+    
+  
+
         if (empty($countryCodeErr) && empty($callbackDataErr) && empty($typeErr) && empty($templateNameErr) && empty($languageCodeErr) && empty($headerValuesErr) && empty($bodyValuesErr)) {
             $url = "https://api.interakt.ai/v1/public/message/";
-            $headers = array(
-                'Authorization: Basic aUdSZmZEZGljeHNEX1ZmYzlZUWRaZFl5RFhDUWo2eUdTc3pQMmpzNGY2czo=',
-                'Content-Type: application/json'
-            );
-            
-            // $multipleUser = ['6263668091','9770961013','9575388527','7580834383','9407907838','9755742883'];
-            $multipleUser = $_POST['user'];
-            foreach($multipleUser as $number){
+
+            foreach ($multipleUser as $number) {
                 $phoneNumber = $number;
                 $data = array(
                     "countryCode" => $countryCode,
@@ -51,20 +151,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
                     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    
+
                     $result = curl_exec($ch);
-    
+
                     if (curl_errno($ch)) {
                         echo 'Curl error: ' . curl_error($ch);
                     } else {
                         $data = json_decode($result, true);
+                        $result = $data['result'];
+                        $message = $data['message'];
                         // Handle the response as needed
                     }
-    
+
                     curl_close($ch);
                 }
             }
-            $_SESSION['success_message'] = "Messages sent to all users";
+            $_SESSION['success_message'] = isset($message)?$message:'';
+            if($errorMessage){
+                $_SESSION['error_message'] = $errorMessage;
+            }
+            
             header("Location: " . $mainUrl . "sendWhatsappMessage.php");
             exit();
         }
@@ -123,8 +229,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         curl_close($curl);
-        print_r($response);
-        die;
+
 
         if ($response === false) {
             echo "Error occurred while sending data to the API.";
