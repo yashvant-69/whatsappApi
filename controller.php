@@ -67,10 +67,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // if not exist user so created user 
         if($phones){
-            foreach($phones as $phone){
+            foreach($phones as $key=> $phone){
                 if (empty($phone)) {
                     continue; 
                 }
+                
                 if (!in_array($phone, $userNumber)) {
                     $api_url = "https://api.interakt.ai/v1/public/track/users/";
         
@@ -85,11 +86,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     //     foreach ($_POST['traitKey'] as $index => $key) {
                     //         $json_data['traits'][$key] = $_POST['traitValue'][$index];
                     //     }
-                    // }
+                    // }    
+                    if (isset($_POST['traitValue'])) {
+                        $json_data['traits'] = [];
+                            $json_data['traits']['name'] = $_POST['traitValue'][$key];
+                        
+                    }
         
                     $json_data = json_encode($json_data, true);
         
-        
+        //print_r($json_data);die;
                     $curl = curl_init();
         
                     curl_setopt($curl, CURLOPT_URL, $api_url);

@@ -77,11 +77,13 @@
 
             if ($data && isset($data['data']['customers']) && !empty($data['data']['customers'])) {
 
-                foreach ($data['data']['customers'] as $user) { ?>
+                foreach ($data['data']['customers'] as $user) {
+                 ?>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="<?php echo $user['phone_number'] ?>" id="user" name="user[]">
                         <label class="form-check-label" for="flexCheckDefault">
-                            <?php echo $user['traits']['name'] ?>
+                        <?php echo isset($user['traits']['name']) ? $user['traits']['name'] : $user['phone_number']; ?>
+
                         </label>
                     </div>
             <?php   }
@@ -99,13 +101,9 @@
                     </div>
                 </div>
                 <div class="row">
-                <div class="form-group col-6">
-                    <label for="traitKey">Trait Key</label>
-                    <input type="text" class="form-control" name="traitKey[]" placeholder="Enter Trait Key">
-                </div>
-                <div class="form-group col-6">
-                    <label for="traitValue">Trait Value</label>
-                    <input type="text" class="form-control" name="traitValue[]" placeholder="Enter Trait Value">
+                <div class="form-group col-10">
+                    <label for="traitValue">Name</label>
+                    <input type="text" class="form-control" name="traitValue[]" placeholder="Enter Your Name">
                 </div>
             </div>
             </div>
@@ -184,13 +182,9 @@
                 </div>
                 </div>
                 <div class="row">
-                <div class="form-group col-6">
-                    <label for="traitKey">Trait Key</label>a
-                    <input type="text" class="form-control" name="tritKey[]" placeholder="Enter Trait Key">
-                </div>
-                <div class="form-group col-6">
-                    <label for="traitValue">Trait Value</label>
-                    <input type="text" class="form-control" name="traitValue[]" placeholder="Enter Trait Value">
+                <div class="form-group col-10">
+                    <label for="traitValue">Name Value</label>
+                    <input type="text" class="form-control" name="traitValue[]" placeholder="Enter Your Name">
                 </div>
             </div>
             </div>
