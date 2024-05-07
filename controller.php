@@ -118,7 +118,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-
+        if (empty($multipleUser)) {
+            $multipleUser = $_POST['user'];
+        }
 
 
         if (empty($countryCodeErr) && empty($callbackDataErr) && empty($typeErr) && empty($templateNameErr) && empty($languageCodeErr) && empty($headerValuesErr) && empty($bodyValuesErr)) {
