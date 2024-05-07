@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $headerValues = isset($_POST['headerValues']) ? $_POST['headerValues'] : "";
         $bodyValues = isset($_POST['bodyValues']) ? $_POST['bodyValues'] : "";
         $phones = isset($_POST['phone']) ? $_POST['phone'] : "";
-        // print_r(($_POST['user']));die;
+
 
         if (empty($countryCode)) {
             $countryCodeErr = "Country code is required";
@@ -63,61 +63,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-        //print_r($userNumber);die;
 
         // if not exist user so created user 
-        if($phones){
-            foreach($phones as $key=> $phone){
+        if ($phones) {
+            foreach ($phones as $key => $phone) {
                 if (empty($phone)) {
-                    continue; 
+                    continue;
                 }
-                
+
                 if (!in_array($phone, $userNumber)) {
                     $api_url = "https://api.interakt.ai/v1/public/track/users/";
-        
+
                     $json_data = array(
-                        // 'userId' => isset($_POST['userId']) ? $_POST['userId'] : '',
                         'phoneNumber' => $phone,
                         'countryCode' => $_POST['countryCode'],
                     );
-        
-                    // if (isset($_POST['traitKey']) && isset($_POST['traitValue'])) {
-                    //     $json_data['traits'] = [];
-                    //     foreach ($_POST['traitKey'] as $index => $key) {
-                    //         $json_data['traits'][$key] = $_POST['traitValue'][$index];
-                    //     }
-                    // }    
+
                     if (isset($_POST['traitValue'])) {
                         $json_data['traits'] = [];
-                            $json_data['traits']['name'] = $_POST['traitValue'][$key];
-                        
+                        $json_data['traits']['name'] = $_POST['traitValue'][$key];
                     }
-        
+
                     $json_data = json_encode($json_data, true);
-        
-        //print_r($json_data);die;
+
                     $curl = curl_init();
-        
+
                     curl_setopt($curl, CURLOPT_URL, $api_url);
                     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($curl, CURLOPT_POST, true);
                     curl_setopt($curl, CURLOPT_POSTFIELDS, $json_data);
                     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
                     curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        
+
                     $createUser = curl_exec($curl);
-        
+
                     if (curl_errno($curl)) {
                         echo 'Curl error: ' . curl_error($curl);
                     } else {
-        
+
                         $res = json_decode($createUser, true);
-        
-                        if($res['result'] != 1){
+
+                        if ($res['result'] != 1) {
                             $errorMessage =  $data['message'];
                         }
                     }
-        
+
                     curl_close($curl);
                 }
 
@@ -127,9 +117,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
         }
-       
-    
-  
+
+
+
 
         if (empty($countryCodeErr) && empty($callbackDataErr) && empty($typeErr) && empty($templateNameErr) && empty($languageCodeErr) && empty($headerValuesErr) && empty($bodyValuesErr)) {
             $url = "https://api.interakt.ai/v1/public/message/";
@@ -172,18 +162,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     curl_close($ch);
                 }
             }
-            $_SESSION['success_message'] = isset($message)?$message:'';
-            if($errorMessage){
+            $_SESSION['success_message'] = isset($message) ? $message : '';
+            if ($errorMessage) {
                 $_SESSION['error_message'] = $errorMessage;
             }
-            
+
             header("Location: " . $mainUrl . "sendWhatsappMessage.php");
             exit();
         }
     }
 
     if ($createUser == 'userCreate') {
-        // echo 22;die;
         $api_url = "https://api.interakt.ai/v1/public/track/users/";
 
         $json_data = array(
@@ -200,9 +189,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         $json_output = json_encode($json_data, true);
-
-        // echo "<pre>";
-        // print_r($json_output);die;
 
 
         $curl = curl_init();
@@ -225,10 +211,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $data = json_decode($response, true);
 
-            // Accessing the decoded data
             $result = $data['result'];
             $message = $data['message'];
-            // $id = $data['id'];
             $_SESSION['success_message'] = $message;
             header("Location: " . $mainUrl . "createUser.php");
             exit();

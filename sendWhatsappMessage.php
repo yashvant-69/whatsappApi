@@ -7,7 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <!-- <title>Document</title> -->
     <style>
         .userForm {
             border: 2px solid grey;
@@ -29,13 +28,11 @@
         session_start();
         if (isset($_SESSION['success_message'])) {
             echo "<div class='alert alert-success'>" . $_SESSION['success_message'] . "</div>";
-            // Success message ko ek baar display karne ke baad, usko unset kare
             unset($_SESSION['success_message']);
         }
 
         if (isset($_SESSION['error_message'])) {
             echo "<div class='alert alert-danger'>" . $_SESSION['error_message'] . "</div>";
-            // Success message ko ek baar display karne ke baad, usko unset kare
             unset($_SESSION['error_message']);
         }
         ?>
@@ -78,11 +75,11 @@
             if ($data && isset($data['data']['customers']) && !empty($data['data']['customers'])) {
 
                 foreach ($data['data']['customers'] as $user) {
-                 ?>
+            ?>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="<?php echo $user['phone_number'] ?>" id="user" name="user[]">
                         <label class="form-check-label" for="flexCheckDefault">
-                        <?php echo isset($user['traits']['name']) ? $user['traits']['name'] : $user['phone_number']; ?>
+                            <?php echo isset($user['traits']['name']) ? $user['traits']['name'] : $user['phone_number']; ?>
 
                         </label>
                     </div>
@@ -101,17 +98,16 @@
                     </div>
                 </div>
                 <div class="row">
-                <div class="form-group col-10">
-                    <label for="traitValue">Name</label>
-                    <input type="text" class="form-control" name="traitValue[]" placeholder="Enter Your Name">
+                    <div class="form-group col-10">
+                        <label for="traitValue">Name</label>
+                        <input type="text" class="form-control" name="traitValue[]" placeholder="Enter Your Name">
+                    </div>
                 </div>
-            </div>
             </div>
             <div id="NumberContainer">
             </div>
             <div id="traitsContainer">
             </div>
-            <!-- <button type="button" class="btn btn-primary my-2" style="float: right;" onclick="addTrait()">Add Trait</button> -->
 
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">CountryCode</label>
@@ -169,9 +165,9 @@
         }
 
         function addNumber() {
-        let row_number = Math.floor(Math.random() * 98765);
-        var NumberContainer = document.getElementById('NumberContainer');
-        var NumberHtml = `<div class="row_${row_number}">
+            let row_number = Math.floor(Math.random() * 98765);
+            var NumberContainer = document.getElementById('NumberContainer');
+            var NumberHtml = `<div class="row_${row_number}">
                   <div class="row">
                 <div class="col-sm-10">
                     <label for="exampleInputPhone_${row_number}">Phone</label>
@@ -189,18 +185,18 @@
             </div>
             </div>
       `;
-        NumberContainer.insertAdjacentHTML('beforeend', NumberHtml);
-    }
+            NumberContainer.insertAdjacentHTML('beforeend', NumberHtml);
+        }
 
-    function removeNumber(row_number) {
-        var row = document.querySelector(`.row_${row_number}`);
-        row.remove();
-    }
+        function removeNumber(row_number) {
+            var row = document.querySelector(`.row_${row_number}`);
+            row.remove();
+        }
 
         setTimeout(() => {
             document.querySelector('.alert-success').remove();
-        }, 10000); 
-        
+        }, 10000);
+
         setTimeout(() => {
             document.querySelector('.alert-danger').remove();
         }, 20000);
